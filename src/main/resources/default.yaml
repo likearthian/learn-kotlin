@@ -1,0 +1,11 @@
+listen_port: 8080
+datediff: 1
+database:
+    host: localhost
+    port: 1521
+    user: ppi_admin
+    password: widirianto
+    dbname: opmfs
+hadoop:
+    hdfs_principal_name: hdp_ppi1@OFFICE.CORP.INDOSAT.COM
+    keytab_file: hdp_ppi1.keytab

@@ -1,0 +1,51 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'application'
+}
+
+group = 'com.indosatppi'
+version = '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation 'com.github.ajalt.clikt:clikt:3.5.0'
+    implementation 'com.oracle.database.jdbc:ojdbc11-production:21.5.0.0'
+    implementation 'io.github.microutils:kotlin-logging-jvm:2.1.23'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.36'
+    implementation 'org.apache.commons:commons-csv:1.9.0'
+    implementation 'com.github.seratch:kotliquery:1.8.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-datetime:0.4.0'
+    implementation 'com.sksamuel.hoplite:hoplite-core:2.3.1'
+    implementation 'com.sksamuel.hoplite:hoplite-yaml:2.3.1'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.71'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '11'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '11'
+}
+
+application {
+    mainClassName = 'com.indosatppi.kcli.MainKt'
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': application.mainClassName
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
