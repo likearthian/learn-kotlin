@@ -23,6 +23,7 @@ dependencies {
     implementation 'com.sksamuel.hoplite:hoplite-core:2.3.1'
     implementation 'com.sksamuel.hoplite:hoplite-yaml:2.3.1'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.71'
+    implementation 'org.apache.hadoop:hadoop-client:3.3.3'
 }
 
 test {

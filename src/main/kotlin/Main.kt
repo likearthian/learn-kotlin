@@ -9,7 +9,7 @@ import com.indosatppi.kcli.config.Config
 
 import com.indosatppi.kcli.config.initConfig
 
-import mu.KotlinLogging
+import com.indosatppi.kcli.logger.logger
 
 import com.indosatppi.kcli.utils.createOraDbConn
 import com.indosatppi.kcli.process.Process
@@ -20,7 +20,6 @@ import java.util.Properties
 
 val USER_HOME = System.getProperties()["user.home"].toString()
 const val DEFAULT_CONFIG_PATH = "/etc/kcli/config.yaml"
-private val logger = KotlinLogging.logger {}
 
 class Root(): CliktCommand(name = "kcli") {
     override fun run() = Unit
