@@ -13,7 +13,8 @@ class Conf: CliktCommand(name = "conf", help = "test config reading") {
         val cfg: Config
         val props = parseOverrideSets(sets)
         try {
-            cfg = initConfig(config, props)
+            initConfig(config, props)
+            cfg = UseConfig()
         } catch(ex: Exception) {
             logger.error { ex.message }
             return
@@ -25,5 +26,17 @@ class Conf: CliktCommand(name = "conf", help = "test config reading") {
 //        TODO("Not yet implemented")
     }
 
+    fun parseOverrideSets(list: List<String>): Properties {
+        val props = Properties()
+        for (str in list) {
+            val slice = str.split("=")
+            val k = slice[0].trim()
+            var v = ""
+            if (slice.count() > 1) v = slice[1].trim()
+            props.setProperty(k, v)
+        }
+
+        return props
+    }
 
 }

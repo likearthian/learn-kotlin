@@ -43,5 +43,7 @@ class Hadoop(val sess: String) {
             "hdp_ppi1@OFFICE.CORP.INDOSAT.COM",
             "/Users/ziska/Projects/go/indosatppi/poc/hdfs/keys/hdp_ppi1.keytab"
         )
+
+        return conf
     }
 }

@@ -7,10 +7,16 @@ import com.indosatppi.kcli.utils.createOraDbConn
 import kotliquery.Session
 import java.sql.SQLException
 import com.indosatppi.kcli.logger.logger
+import com.indosatppi.kcli.process.NgsspSummaryProcess
 import com.indosatppi.kcli.process.Process
+import org.apache.hadoop.fs.FileSystem
 
 class Run(): CliktCommand(help = "Run job") {
     val ktab by option("-k", "--ktab", help = "path to keytab file").default(USER_HOME, "default is $USER_HOME")
+
+    init {
+        println("run init")
+    }
     override fun run() {
 
         logger.info{ "keytab file is $ktab"}
@@ -22,6 +28,12 @@ class Run(): CliktCommand(help = "Run job") {
             return
         }
 
+        runNgsspSummary(db)
+
+        logger.info { "process done" }
+    }
+
+    fun runPrintRef(db: Session) {
         val pr = Process(db)
 
         try {
@@ -30,7 +42,10 @@ class Run(): CliktCommand(help = "Run job") {
             logger.error { ex.message }
             return
         }
+    }
 
-        logger.info { "process done" }
+    fun runNgsspSummary(db: Session) {
+        val ng = NgsspSummaryProcess(db)
+        ng.OraDeleteNgsspSummary()
     }
 }
