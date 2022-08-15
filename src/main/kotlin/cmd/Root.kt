@@ -1,12 +1,12 @@
 package com.indosatppi.kcli.cmd
 
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.subcommands
+import com.github.ajalt.clikt.core.*
+import com.github.ajalt.clikt.parameters.groups.OptionGroup
+import com.github.ajalt.clikt.parameters.groups.provideDelegate
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.indosatppi.kcli.config.Config
-import com.indosatppi.kcli.config.UseConfig
 import com.indosatppi.kcli.config.initConfig
 import com.indosatppi.kcli.logger.logger
 import java.util.*
@@ -14,30 +14,52 @@ import java.util.*
 val USER_HOME = System.getProperties()["user.home"].toString()
 const val DEFAULT_CONFIG_PATH = "/etc/kcli/config.yaml"
 
-class Root: CliktCommand(name = "kcli") {
+class CommonOptions: OptionGroup("Common Options") {
     val config by option("-c", "--config", help = "path to config file").default(DEFAULT_CONFIG_PATH, "default is $DEFAULT_CONFIG_PATH")
     val sets: List<String> by option("-s", "--set").multiple()
-    init {
-        println("init root")
-//        val props = parseOverrideSets(sets)
-//        initConfig(config, props)
-    }
+}
+
+abstract class BaseCommand(
+    help: String = "",
+    epilog: String = "",
+    name: String? = null,
+    invokeWithoutSubcommand: Boolean = false,
+    printHelpOnEmptyArgs: Boolean = false,
+    helpTags: Map<String, String> = emptyMap(),
+    autoCompleteEnvvar: String? = "",
+    allowMultipleSubcommands: Boolean = false,
+    treatUnknownOptionsAsArgs: Boolean = false,
+    hidden: Boolean = false
+) : CliktCommand(
+    help,
+    epilog,
+    name,
+    invokeWithoutSubcommand,
+    printHelpOnEmptyArgs,
+    helpTags,
+    autoCompleteEnvvar,
+    allowMultipleSubcommands
+) {
+    private val config by option("-c", "--config", help = "path to config file").default(DEFAULT_CONFIG_PATH, "default is $DEFAULT_CONFIG_PATH")
+    private val sets: List<String> by option("-s", "--set").multiple()
+
     override fun run() {
-        val cfg: Config
+        val config = config
         val props = parseOverrideSets(sets)
+        val cfg = initConfig(config, props)
         try {
-            initConfig(config, props)
-            cfg = UseConfig()
+            currentContext.findOrSetObject { cfg }
         } catch(ex: Exception) {
             logger.error { ex.message }
             return
         }
 
         println("config path: $config")
-        println("config: $cfg")
         println("props: $props")
     }
 }
+
+class Root: NoOpCliktCommand()
 
 fun initRoot(): Root {
     return Root().subcommands(Run(), Conf())
